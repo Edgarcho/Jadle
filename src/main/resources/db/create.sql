@@ -1,6 +1,6 @@
 SET MODE PostgresSql;
 
-CREATE TABLE IF NOT EXISTS restaurants(
+CREATE TABLE IF NOT EXISTS restaurants (
     id int PRIMARY KEY  auto_increments,
     name VARCHAR,
     address VARCHAR,
@@ -10,12 +10,12 @@ CREATE TABLE IF NOT EXISTS restaurants(
     email VARCHAR
 );
 
-CREATE TABLE IF NOT EXISTS foodtypes(
+CREATE TABLE IF NOT EXISTS foodtypes (
     id int PRIMARY KEY auto_increments,
     name VARCHAR
 );
 
-CREATE TABLE IF NOT EXISTS reviews(
+CREATE TABLE IF NOT EXISTS reviews (
     id int PRIMARY KEY auto-auto_increments,
     writtenby VARCHAR,
     content VARCHAR,
