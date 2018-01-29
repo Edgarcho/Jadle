@@ -35,33 +35,54 @@ public class Sql2oReviewDaoTest {
         Restaurant testRestaurant = setupRestaurant();
         restaurantDao.add(testRestaurant);
         Review testReview = new Review("Captain Kirk", 3, "foodcoma!",testRestaurant.getId());
+        int originalReviewId = testReview.getId();
         reviewDao.add(testReview);
-        assertEquals(1,testReview.getId());
+        assertNotEquals(originalReviewId,testReview.getId());
+    }
+
+    @Test
+    public void getAllReturnsAllReviews() throws Exception {
+        Restaurant testRestaurant = setupRestaurant();
+        restaurantDao.add(testRestaurant);
+        Review testReview = new Review("Captain Kirk", 3, "foodcoma!", testRestaurant.getId());
+        reviewDao.add(testReview);
+        Review secondReview = new Review("Mr Spock", 1, "passable", testRestaurant.getId());
+        reviewDao.add(secondReview);
+
+        Review reviewFromDatabase = reviewDao.getAll().get(0);
+
+        assertEquals(2, reviewDao.getAll().size());
+        assertArrayEquals(new Object[]{"Captain Kirk", 3, "foodcoma!", 1}, new Object[]{reviewFromDatabase.getWrittenBy(), reviewFromDatabase.getRating(), reviewFromDatabase.getContent(), reviewFromDatabase.getId()});
+    }
+
+    @Test
+    public void deleteById() throws Exception {
+        Restaurant testRestaurant = setupRestaurant();
+        restaurantDao.add(testRestaurant);
+        Review testReview = new Review("Captain Kirk", 3, "foodcoma!", testRestaurant.getId());
+
+
+        reviewDao.add(testReview);
+        reviewDao.deleteById(testReview.getId());
+        assertEquals(0, reviewDao.getAllReviewsByRestaurant(testRestaurant.getId()).size());
     }
 
     @Test
     public void getAllReviewsByRestaurant() throws Exception {
-
         Restaurant testRestaurant = setupRestaurant();
         restaurantDao.add(testRestaurant);
 
-        Restaurant newRestaurant = setupRestaurant(); //add in some extra data to see if it interferes
-        restaurantDao.add(newRestaurant);
-
         Review testReview = new Review("Captain Kirk", 3, "foodcoma!",testRestaurant.getId());
         reviewDao.add(testReview);
-
-        Review otherReview = new Review("Mr. Spock", 1, "passable", testRestaurant.getId());
-        reviewDao.add(otherReview);
-
         Review secondReview = new Review("Mr Spock", 1, "passable", 1234); //to be sure the right one gets deleted, i am adding a second review for a fake restaurant.
         reviewDao.add(secondReview);
 
-        assertEquals(testReview, reviewDao.getAllReviewsByRestaurant(testRestaurant.getId()).get(0));
 
+        assertEquals(testReview, reviewDao.getAllReviewsByRestaurant(testRestaurant.getId()).get(0));
     }
 
     //helpers
+
 
     public Restaurant setupRestaurant (){
         return new Restaurant("Fish Witch", "214 NE Broadway", "97232", "503-402-9874", "http://fishwitch.com", "hellofishy@fishwitch.com");
